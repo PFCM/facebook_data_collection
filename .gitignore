@@ -10,3 +10,6 @@ __pycache__/
 auth.yaml
 # or any results
 results/
+
+# or anything with the suffix ".old" for convenience
+*.old
