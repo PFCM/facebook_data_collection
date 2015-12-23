@@ -1,3 +1,4 @@
+# Intro
 This is a utility to pull data from public facebook pages.
 It requires facebook api authentication, in a file called auth.yaml
 with appropriate app_secret and app_id keys.
@@ -6,7 +7,7 @@ in the same directory as the script. This is likely to change.
 It is released under the BSD 2-clause license.
 It is very preliminary, and accordingly poorly organised.
 
-How to collect facebook data:
+## How to collect facebook data:
 	First we have to open a command prompt:
 		open the start menu, search for "run" and click it
 		a small window will open, in the text field type "cmd" and press the OK button
@@ -17,17 +18,21 @@ How to collect facebook data:
 			> xyz
 			'xyz' is not recognized as an internal or external command,
 			operable program or batch file.
+
 		to indicate typing "xyz" into the prompt, pressing enter and seeing a result,
 		which in this example is an error.
 
 	The data collection is a Python script. To run it, Python (version 3.4 or higher)
 	must be installed. To test:
 		in the command prompt window opened earlier, run the command:
+
 			>python --version
 		the result should look something like this:
 			Python 3.5.0
 		if it says `python` is not recognised as a command, try:
 			>py --version
+
+
 		if this succeeds, replace "python" with "py" in all the following instructions,
 		because Windows is strange. If it fails or if the number is less than 3.4,
 		then install python. This is easy, just Google it, download and run the installer.
