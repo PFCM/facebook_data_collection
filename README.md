@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/PFCM/facebook_data_collection.svg)](https://travis-ci.org/PFCM/facebook_data_collection)
-# Intro
+# McMac facebook tools
 This is a utility to pull data from public facebook pages.
 It requires facebook api authentication, in a file called auth.yaml
 with appropriate app_secret and app_id keys.

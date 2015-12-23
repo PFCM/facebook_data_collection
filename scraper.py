@@ -26,11 +26,11 @@ time_format = "%Y-%m-%d"
 CSV_HEADERS = ["date","page", "posted by", "message","link", "shares", "likes", "number of comments", "pic", "url", "type"]
 
 # test what bits of the urllib code we have to alter
-def test_facebook_page_data(page_id, access_token):
+def test_facebook_page_data(page_id, access_token=ACCESS_TOKEN):
     # make a url
     base = "https://graph.facebook.com/v2.5"
     node = "/" + page_id
-    parameters = "/?access_token={}".format(access_token)
+    parameters = "?access_token={}".format(access_token)
     url = base + node + parameters
     logging.info(url)
     # make the request
@@ -38,7 +38,8 @@ def test_facebook_page_data(page_id, access_token):
     opener = urllib.request.build_opener(urllib.request.HTTPHandler)
     resp = opener.open(req)
     data = json.loads(resp.read().decode('utf-8'))
-    print(json.dumps(data, indent=4, sort_keys=True))
+    #print(json.dumps(data, indent=4, sort_keys=True))
+    return data
 
 def request_until_success(url, max_attempts=5, wait=5):
     """Makes a request a few times in case of a 500 error.
