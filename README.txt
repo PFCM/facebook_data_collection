@@ -1,3 +1,8 @@
+This is a utility to pull data from public facebook pages.
+It requires facebook api authentication, in a file called auth.yaml
+with appropriate app_secret and app_id keys.
+in the same directory as the script. This is likely to change.
+
 How to collect facebook data:
 	First we have to open a command prompt:
 		open the start menu, search for "run" and click it

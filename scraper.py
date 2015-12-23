@@ -10,10 +10,13 @@ import time
 import sys
 import os
 
-app_id = "1691682857784596"
-app_secret = "65f61b4b9369b9f0853415cc81628212"
-access_token = app_id + "|" + app_secret
-#access_token = "CAACEdEose0cBAB8vLzQ66lw1diql3UmfBlhneBZBSJVdox2LWz84uZCRb53NpliZBmWjVZBsTdlWKH23xRkvcmaBs3ipe4cUt6sZCe3ZCZAQZCirwbKB10ZBhpyszsRCQh2aAvsJuN7lcKlZCWoz4iOx2LcWydwZAOQXh6jGNZAf2ILFC57gpoVTUixNAFYijTZBVJH9rEvaIvx6kqAZDZD"
+# for dealing witht eh authentication
+import yaml
+
+# load up the auth globally
+with open("auth.yaml") as f:
+    auth = yaml.load(f)
+    ACCESS_TOKEN = auth["app_id"] + "|" + auth["app_secret"]
 query = "?fields=feed{comments{created_time,like_count,message,from{name}},link,shares,message,name,likes,created_time,from{name},picture}"#,posts{message,likes,shares,name}"
 #query = "326170274196469/feed/?"
 endpoint_base = "https://graph.facebook.com/v2.5/"
@@ -247,7 +250,7 @@ if __name__ == '__main__':
     data = []
     for page in page_id:
         logging.info("~~~~~~~~~~~~~~~{}~~~~~~~~~~~~~~~".format(page))
-        raw_data = make_facebook_query(page, query, access_token,
+        raw_data = make_facebook_query(page, query, ACCESS_TOKEN,
                                        since=datetime.datetime.strptime(
                                            args['since'],time_format).replace(tzinfo=timezone.utc),
                                        until=datetime.datetime.strptime(

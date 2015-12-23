@@ -1,0 +1,12 @@
+# anything byte-compiled etc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS files
+.DS_Store
+
+# don't push the unencrypted auth token[s]
+auth.yaml
+# or any results
+results/

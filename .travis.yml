@@ -1,0 +1,8 @@
+language: python
+python:
+    - "3.4"
+    - "3.5"
+# how to install dependencies:
+install: "pip install -r requirements.txt"
+# how to run tests
+# lol there aren't any (and this is NOT OK)
