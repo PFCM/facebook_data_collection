@@ -10,3 +10,5 @@ install: "pip install -r requirements.txt"
 notifications:
     email:
         on_success: change
+
+sudo: false
