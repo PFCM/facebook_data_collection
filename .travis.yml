@@ -9,6 +9,7 @@ notifications:
     on_success: change
 sudo: false
 deploy:
+  skip_cleanup: true
   provider: script
   script: tools/dropbox-deploy.sh
   on:
