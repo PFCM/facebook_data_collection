@@ -20,7 +20,6 @@ This leads to the following solution:
     AND for each group of comments, includes the post on which they are
     comments.
 """
-import sys
 import argparse
 
 import pandas as pd # we definitely want to use something a bit sophisticated
@@ -67,11 +66,11 @@ class SymmetricDifference(Op):
         for comments, post which the comment was on will always be included,
         regardless of whether it is in both files.
     """
-
-    def __init__(self, args):
-        """args should be a string, we can parse it ourselves, thank you v.
-        much"""
-        parser = self._binary_args()
+    @classmethod
+    def from_args(cls, args):
+        """Returns a new SymmetricDeffierence op, from the arguments as
+        taken straight from the command line"""
+        parser = cls._binary_args()
         # add a switch
         parser.add_argument(
             '--no-context', '-nc',
@@ -79,28 +78,41 @@ class SymmetricDifference(Op):
             help='If this flag is present, context information will not be stored')
         # now parse the args
         args = parser.parse_args(args)
-        self.do_context = not args.no_context
-        self.file_1 = args.file_1
-        self.file_2 = args.file_2
+        # read the files
+        # issue with text encoding here'
+        print('reading {}'.format(args.file_1))
+        data1 = pd.read_csv(args.file_1, encoding='utf-16', index_col='date',
+                            parse_dates=True, sep='\t')
+        print('reading {}'.format(args.file_2))
+        data2 = pd.read_csv(args.file_2, encoding='utf-16', index_col='date',
+                            parse_dates=True, sep='\t')
+        return cls(data1, data2, write_out=True, do_context=not args.no_context)
+
+    def __init__(self, file_1, file_2, write_out=False, do_context=False):
+        """Version of init for when no args are present (ie. testing).
+        Expects that file_1 and file_2 are data frames already"""
+        self.do_context = do_context
+        self.data1 = file_1
+        self.data2 = file_2
+        self.write_out = write_out
         self.outfile = 'output.csv'
 
     def __call__(self):
-        print('Symmetric difference called on: \n{} {}'.format(
-            self.file_1, self.file_2
-        ))
         # first up, is there a nice pandas way of doing the symmetric differnce?
-        # issue with text encoding here
-        data1 = pd.read_csv(self.file_1, encoding='utf-16')
-        data2 = pd.read_csv(self.file_2, encoding='utf-16')
-        all_data = pd.concat([data1, data2])
-        all_data = all_data.reset_index(drop=True)
+        print('doing symmetric difference')
+        all_data = pd.concat([self.data1, self.data2])
+        #all_data = all_data.reset_index(drop=True)
         grouped = all_data.groupby(list(all_data.columns))
         # list of unique records
         idx = [x[0] for x in grouped.groups.values() if len(x) == 0]
-        # add context here?
-        all_data.reindex(idx)
-
-        all_data.to_csv(self.outfile)
+        if idx: # b/c if not, then totally disjoint, return the lot
+            # add context here?
+            all_data.reindex(idx)
+        if self.write_out:
+            print('writing results to {}'.format(self.outfile))
+            all_data.to_csv(self.outfile, encoding='utf-16', sep='\t',
+                            index_label='dates')
+        return all_data
 
 ########## done with the classes, should put the above in a separate file ######
 
@@ -110,7 +122,7 @@ ALL_OPS = [SymmetricDifference]
 OPS_DICT = dict([(op.name, op) for op in ALL_OPS])
 
 def setup_main_args():
-    """Or rather, arg"""
+    """Or rather, arg. Should do submodules etc."""
     parser = argparse.ArgumentParser(
         description="""Help with organising CSV files produced by the
         scraper. Operations are:
@@ -144,7 +156,7 @@ def get_initialised_op():
     parser = setup_main_args()
     args = parser.parse_args()
     op_cls = OPS_DICT[args.operation]
-    return op_cls(args.sub_args)
+    return op_cls.from_args(args.sub_args)
 
 def main():
     """Does the thing"""

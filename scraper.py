@@ -23,10 +23,11 @@ endpoint_base = "https://graph.facebook.com/v2.5/"
 page_id = "326170274196469"
 time_format = "%Y-%m-%d"
 
-CSV_HEADERS = ["date","page", "posted by", "message","link", "shares", "likes", "number of comments", "pic", "url", "type"]
+CSV_HEADERS = ["date","page", "posted by", "message","link", "shares", "likes",
+               "number of comments", "pic", "url", "type"]
 
 # test what bits of the urllib code we have to alter
-def test_facebook_page_data(page_id, access_token=ACCESS_TOKEN):
+def ping_fb_page(page_id, access_token=ACCESS_TOKEN):
     # make a url
     base = "https://graph.facebook.com/v2.5"
     node = "/" + page_id
@@ -207,7 +208,7 @@ def write_data(data, headers, fpath):
         f.write(("{}\t"*num_cols).format(*headers)+"\n")
         for i,row in enumerate(data):
             # double check it is safe
-            # qutes make excel happy
+            # quotes make excel happy
             clean_row = ['"{0}"'.format(str(value).replace('"',"'")).expandtabs() for value in row]
 
             f.write(("{}\t"*num_cols).format(*tuple(clean_row))+"\n")
