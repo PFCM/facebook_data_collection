@@ -134,3 +134,15 @@ class Symdiff_Test(object):
         result_2 = op_2().sort_index()
 
         assert result_1.equals(result_2)
+
+    def oneway_diff_test(self):
+        """Test that if a contains all of b, then a symdiff b = a-b"""
+        a, b = setup_disjoint()
+        a = pd.concat([a,b])
+
+        op = mergetools.SymmetricDifference(a,b)
+
+        result = op()
+
+        assert len(result) == len(a) - len(b)
+        # should check content as well?
