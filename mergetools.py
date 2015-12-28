@@ -21,6 +21,7 @@ This leads to the following solution:
     comments.
 """
 import argparse
+import datetime
 
 import pandas as pd # we definitely want to use something a bit sophisticated
 
@@ -78,14 +79,18 @@ class SymmetricDifference(Op):
             help='If this flag is present, context information will not be stored')
         # now parse the args
         args = parser.parse_args(args)
+
+        # probably will use this stuff elsewhere
+        def date_parser(date_str):
+            return datetime.datetime.strptime(date_str, "%d/%m/%Y %I:%M:%S %p")
+
         # read the files
-        # issue with text encoding here'
         print('reading {}'.format(args.file_1))
         data1 = pd.read_csv(args.file_1, encoding='utf-16', index_col='date',
-                            parse_dates=True, sep='\t')
+                            parse_dates=True, sep='\t', date_parser=date_parser)
         print('reading {}'.format(args.file_2))
         data2 = pd.read_csv(args.file_2, encoding='utf-16', index_col='date',
-                            parse_dates=True, sep='\t')
+                            parse_dates=True, sep='\t', date_parser=date_parser)
         return cls(data1, data2, write_out=True, do_context=not args.no_context)
 
     def __init__(self, file_1, file_2, write_out=False, do_context=False):

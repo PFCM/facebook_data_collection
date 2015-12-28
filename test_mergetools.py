@@ -7,11 +7,12 @@ from contextlib import contextmanager
 import string
 import datetime
 import csv
+import os
 
 import pandas as pd
 
 import mergetools
-from scraper import CSV_HEADERS
+from scraper import CSV_HEADERS, write_data
 
 def random_str(length, chars=string.ascii_lowercase):
     return ''.join(random.choice(chars) for _ in range(length))
@@ -57,6 +58,13 @@ def setup_disjoint():
     return (random_fb_dataframe(size=30, until=start_a),
             random_fb_dataframe(size=30, until=start_b))
 
+def setup_overlapping():
+    """Make some fake data with some overlap. Returns 2 pandas DataFrames which
+    overlap by 50 rows"""
+    # first we'll just get a big one
+    big_data = random_fb_dataframe()
+    return pd.DataFrame(big_data[:75]), pd.DataFrame(big_data[25:])
+
 @contextmanager
 def write_dataframes(frames, encoding='utf-16'):
     """Writes a sequence of dataframes to temporary files and returns the
@@ -65,18 +73,29 @@ def write_dataframes(frames, encoding='utf-16'):
     files = []
     for frame in frames:
         files.append(tempfile.NamedTemporaryFile(mode='w', delete=False))
-        frame.to_csv(files[-1],
-                     encoding=encoding,
-                     index_label='dates',
-                     quoting=csv.QUOTE_ALL,
-                     sep='\t')
+        #frame.to_csv(files[-1],
+        #             encoding=encoding,
+        #             index_label='dates',
+        #             quoting=csv.QUOTE_ALL,
+        #             sep='\t')
         # actually write it
         files[-1].close()
+        # may as well make sure it is precisely how the scraper does it
+        data = list(frame.itertuples())
+        # need to tidy up the index dates
+        real_data = []
+        for tup in data:
+            real_data.append([])
+            real_data[-1].append(tup[0].to_datetime().strftime("%d/%m/%Y %I:%M:%S %p"))
+            real_data[-1].extend(tup[1:])
+
+        write_data(real_data, ['date']+list(frame), files[-1].name)
+
     # yield the names
     yield [f.name for f in files]
     # close the files
     for f in files:
-        f.delete()
+        os.remove(f.name)
 
 # no doubt someday it will make sense to have this very cleverly organised
 # but right now there is only one functionality to test
@@ -103,3 +122,11 @@ class Symdiff_Test(object):
         with write_dataframes(setup_disjoint()) as data:
             op = mergetools.SymmetricDifference.from_args(data)
             op()
+
+    def symmetricity_test(self):
+        """Test that a symdiff b == b symdiff a"""
+        a, b = setup_overlapping()
+        op_1 = mergetools.SymmetricDifference(a,b)
+        op_2 = mergetools.SymmetricDifference(b,a)
+
+        assert op_1().equals(op_2())
