@@ -64,6 +64,7 @@ def handle_directory(local_path, dropbox_dir, recurse):
 def handle_single_file(local_path, dropbox_dir):
     """Uploads only one file to the given dropbox location + local filename.
     Always overwrites existing files."""
+    # TODO paths aren't always right
     args = {
         "path": dropbox_dir + "/" + os.path.basename(local_path),
         "mode": "overwrite"
