@@ -106,7 +106,11 @@ class SymmetricDifference(Op):
         # first up, is there a nice pandas way of doing the symmetric differnce?
         print('doing symmetric difference')
         all_data = pd.concat([self.data1, self.data2])
-        grouped = all_data.groupby(list(all_data.columns))
+        # don't group by all columns, the number of likes etc might have
+        # changed. Instead just group by the ones that will defs be constant
+        grouped = all_data.groupby([
+            'page', 'posted by', 'message', 'type'
+        ])
         #print([x for x in grouped.groups])
         # list of unique records
         idx = [x[0] for x in grouped.groups.values() if len(x) == 1]
