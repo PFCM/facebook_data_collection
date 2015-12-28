@@ -110,8 +110,8 @@ class Symdiff_Test(object):
         op = mergetools.SymmetricDifference(a,b,
                                             write_out=False,
                                             do_context=False)
-        result_1 = pd.concat([a,b])
-        result_2 = op()
+        result_1 = pd.concat([a,b]).sort_index()
+        result_2 = op().sort_index()
 
         assert result_1.equals(result_2)
 
@@ -124,9 +124,13 @@ class Symdiff_Test(object):
             op()
 
     def symmetricity_test(self):
-        """Test that a symdiff b == b symdiff a"""
+        """Test that a symdiff b contains the same data (not necessarily in the
+        same order) as b symdiff a"""
         a, b = setup_overlapping()
         op_1 = mergetools.SymmetricDifference(a,b)
         op_2 = mergetools.SymmetricDifference(b,a)
 
-        assert op_1().equals(op_2())
+        result_1 = op_1().sort_index()
+        result_2 = op_2().sort_index()
+
+        assert result_1.equals(result_2)

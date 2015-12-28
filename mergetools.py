@@ -106,13 +106,14 @@ class SymmetricDifference(Op):
         # first up, is there a nice pandas way of doing the symmetric differnce?
         print('doing symmetric difference')
         all_data = pd.concat([self.data1, self.data2])
-        #all_data = all_data.reset_index(drop=True)
         grouped = all_data.groupby(list(all_data.columns))
+        #print([x for x in grouped.groups])
         # list of unique records
-        idx = [x[0] for x in grouped.groups.values() if len(x) == 0]
-        if idx: # b/c if not, then totally disjoint, return the lot
+        idx = [x[0] for x in grouped.groups.values() if len(x) == 1]
+        if idx: # b/c if not, then totally the same?, return the lot
             # add context here?
-            all_data.reindex(idx)
+            print(len(idx))
+            all_data = all_data.loc[idx]
         if self.write_out:
             print('writing results to {}'.format(self.outfile))
             all_data.to_csv(self.outfile, encoding='utf-16', sep='\t',
