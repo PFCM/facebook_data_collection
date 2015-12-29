@@ -100,7 +100,7 @@ class SymmetricDifference(Op):
         self.data1 = file_1
         self.data2 = file_2
         self.write_out = write_out
-        self.outfile = 'output.csv'
+        self.outfile = 'output.xlsx'
 
     def __call__(self):
         # first up, is there a nice pandas way of doing the symmetric differnce?
@@ -120,8 +120,9 @@ class SymmetricDifference(Op):
             all_data = all_data.loc[idx]
         if self.write_out:
             print('writing results to {}'.format(self.outfile))
-            all_data.to_csv(self.outfile, encoding='utf-16', sep='\t',
-                            index_label='dates')
+            with pd.ExcelWriter(self.outfile) as writer:
+                all_data.to_excel(writer, sheet_name='data',
+                                  index_label='dates')
         return all_data
 
 ########## done with the classes, should put the above in a separate file ######
