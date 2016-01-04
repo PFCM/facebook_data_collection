@@ -5,8 +5,9 @@ python:
 install: pip install -r requirements.txt
 script: nosetests
 notifications:
-  email:
-    on_success: change
+  slack:
+    secure: KwWH6URNVUZ4/hD90NpK7RGaCvmohK+0WDbiKEdITQA2ncLx+vfNH+09CwyUirETlZOKEGQLJBJAAA4sEjSO/0R/rNyOSf7jAi6wZep9pJzjtuwhOyA9IUswK+ZcdQnq+VIVrqwWa1jPxCq54gbveRjfHJuXbjXP33qMoXx05w9bFAOANBVdNTQKieVB87sayL9ocEEUPy40bm0xna1meP14ZUHTF058+QB6e0c1nxDe9QWrxw4q0GZdOS/3XjkrDfCw8mNJP/qaMExtF/gRPIofri3W25S2S5dRzwM1A/klDzjtxZT6G6FFTu+dmiHiUj6zgBEirLVACVcw9bUKGwEEiao9NsBw++d31qkY25nVVGqOUxfUvGePomtKNBvYNvzefWcwcQgEvY4hC1n9tVXZykasmpniNoSnIGyx605blgFgJKNtfJ7Ua+54X3QQ6THoP/M5/KxKV04niqZ/HwVEkFCT77vCCiE3r44ahQI1DHjxd63T6WuYH8yicu4dASiHdxvnXFGQ4C2z152iJ/+iavXyNOeA4TdDtiUKki2kIrsH/0auE+n8e31CSZFvpfLK54BbNIkbOO8+j2tvV1qjd5i6wmJK3/uFmQ7sePsgW6uUpDKMFH6dEK3J0QgOKfQCxthZUo9Ztc6KQoumwfKsQyYxVnhRS76sUHdXG0E=
+ 
 sudo: false
 deploy:
   skip_cleanup: true
